@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FormularioContacto extends JFrame {
 
@@ -113,11 +116,29 @@ public class FormularioContacto extends JFrame {
             return;
         }
 
-        JOptionPane.showMessageDialog(this, "Formulario válido:\n" +
-                "Nombre: " + nombre + "\n" +
-                "Apellido: " + apellido + "\n" +
-                "Teléfono: " + telefono + "\n" +
-                "Mensaje: " + mensaje, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        // Guardar en archivo
+        guardarEnArchivo(nombre, apellido, telefono, mensaje);
+
+        JOptionPane.showMessageDialog(this, "Formulario válido y guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void guardarEnArchivo(String nombre, String apellido, String telefono, String mensaje) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("contactos.txt", true))) {
+            writer.write("Nombre: " + nombre);
+            writer.newLine();
+            writer.write("Apellido: " + apellido);
+            writer.newLine();
+            writer.write("Teléfono: " + telefono);
+            writer.newLine();
+            writer.write("Mensaje: " + mensaje);
+            writer.newLine();
+            writer.write("---------------");
+            writer.newLine();
+            System.out.println("Datos guardados");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar en archivo: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void limpiarFormulario() {
@@ -128,6 +149,6 @@ public class FormularioContacto extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FormularioContacto());
+        SwingUtilities.invokeLater(FormularioContacto::new);
     }
 }
